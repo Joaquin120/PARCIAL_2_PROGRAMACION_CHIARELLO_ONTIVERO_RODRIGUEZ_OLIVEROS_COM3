@@ -1,0 +1,103 @@
+{
+  "version": 5,
+  "step": "done",
+  "owner": "active-orchestrator",
+  "discovery": {
+    "skipped": true
+  },
+  "kb": {
+    "created_by": "kb-creator",
+    "source": "interactive",
+    "discovery": {
+      "problem": "Estructurar la base arquitectónica y fundacional de un backend asíncrono robusto (FastAPI, PostgreSQL con SQLAlchemy 2.0 asyncpg, pydantic-settings, ciclo de vida lifespan y healthchecks) para el Parcial 2 de Programación (TP Capítulos 1 a 4).",
+      "system_type": "api",
+      "domain": "academic / backend foundation",
+      "scale": "team",
+      "stack": [
+        "Python 3.11+",
+        "FastAPI",
+        "pydantic-settings",
+        "SQLAlchemy 2.0",
+        "asyncpg",
+        "PostgreSQL 16",
+        "Uvicorn",
+        "pytest-asyncio"
+      ],
+      "needs_infra": true
+    },
+    "files": [
+      "knowledge-base/01_vision_y_objetivos.md",
+      "knowledge-base/02_descripcion_general.md",
+      "knowledge-base/03_actores_y_roles.md",
+      "knowledge-base/04_modelo_de_datos.md",
+      "knowledge-base/05_reglas_de_negocio.md",
+      "knowledge-base/06_funcionalidades.md",
+      "knowledge-base/07_flujos_principales.md",
+      "knowledge-base/08_arquitectura_propuesta.md",
+      "knowledge-base/09_decisiones_y_supuestos.md",
+      "knowledge-base/10_preguntas_abiertas.md",
+      "knowledge-base/README.md"
+    ]
+  },
+  "visual_design": {
+    "created_by": "design-system",
+    "mode": "off",
+    "status": "skipped",
+    "revision": 1,
+    "path": "design-system/README.md"
+  },
+  "roadmap": {
+    "created_by": "roadmap-generator",
+    "source": "CHANGES.md",
+    "changes": [
+      "C-01",
+      "C-02",
+      "C-03",
+      "C-04"
+    ],
+    "changes_file": "CHANGES.md"
+  },
+  "skills": {
+    "created_by": "find-skill",
+    "recommended": [
+      {
+        "name": "fastapi-python",
+        "source": "mindrally/skills@fastapi-python",
+        "installs": "14K",
+        "reason": "Patrones modernos de diseño y endpoints para FastAPI"
+      },
+      {
+        "name": "async-python-patterns",
+        "source": "wshobson/agents@async-python-patterns",
+        "installs": "18.5K",
+        "reason": "Buenas prácticas de asyncio, concurrency y async context managers"
+      },
+      {
+        "name": "python-testing-patterns",
+        "source": "wshobson/agents@python-testing-patterns",
+        "installs": "39.3K",
+        "reason": "Estrategias de testing asíncrono con pytest y fixtures"
+      }
+    ],
+    "installed": []
+  },
+  "registry": {
+    "created_by": "skill-registry",
+    "file": ".atl/skill-registry.md"
+  },
+  "agents": {
+    "created_by": "agent-instruction",
+    "files": [
+      "CLAUDE.md",
+      "AGENTS.md"
+    ],
+    "reglas_applied": [
+      "No I/O sincrónico en BD (AsyncEngine/async_sessionmaker obligatorio)",
+      "Lifespan context manager moderno (@asynccontextmanager, prohíbe on_event)",
+      "Configuración tipada estricta con pydantic-settings y lru_cache",
+      "Desacoplamiento de probes: /health/live (proceso) vs /health/ready (SELECT 1 con timeout 2s)",
+      "Testing asíncrono no bloqueante con httpx.AsyncClient y ASGITransport",
+      "Tipado estricto y modelos Pydantic sin campos no tipados"
+    ]
+  }
+}
