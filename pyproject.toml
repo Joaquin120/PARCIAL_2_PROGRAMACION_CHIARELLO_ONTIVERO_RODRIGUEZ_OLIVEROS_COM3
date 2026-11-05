@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "parcial-2-programacion"
 version = "0.1.0"
-description = "Backend asíncrono con FastAPI y PostgreSQL (TP Capítulos 1 a 4)"
+description = "Backend asíncrono con FastAPI y PostgreSQL (TP Capítulos 1 a 4 + Parcial 1 a 6)"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
@@ -16,6 +16,8 @@ dependencies = [
     "asyncpg>=0.30.0",
     "greenlet>=3.0.0",
     "alembic>=1.13.0",
+    "bcrypt>=4.0.0",
+    "pyjwt>=2.8.0",
 ]
 
 [project.optional-dependencies]
@@ -29,11 +31,11 @@ dev = [
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"
-testpaths = ["tests"]
+testpaths = ["tests", "parcial/tests"]
 pythonpath = ["."]
 
 [tool.coverage.run]
-source = ["src"]
+source = ["src", "parcial"]
 branch = true
 
 [tool.coverage.report]

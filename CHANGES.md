@@ -26,7 +26,7 @@ C-01 foundation-setup [x]
               └── C-04 integration-and-e2e-testing [x]
                     ├── C-11 vps-docker-deployment
                     └── [Parcial Capítulos 1 a 6]
-                        C-05 parcial-core-uow
+                        C-05 parcial-core-uow [x]
                           └── C-06 parcial-models-and-migrations
                                 ├── C-07 parcial-auth-and-security
                                 │     └── C-09 parcial-ventas-transactions
@@ -86,7 +86,7 @@ Paso │ Agente A (Backend Core)              │ Agente B (Backend Aux)       �
   2  │ C-02 domain-models-and-migrations[x]│              —               │              —
   3  │ C-03 business-api-endpoints [x]      │              —               │              —
   4  │ C-04 integration-and-e2e-testing [x]│              —               │              —
-  5  │ C-05 parcial-core-uow                │              —               │ C-11 vps-docker-deployment
+  5  │ C-05 parcial-core-uow [x]            │              —               │ C-11 vps-docker-deployment
   6  │ C-06 parcial-models-and-migrations  │              —               │              —
   7  │ C-07 parcial-auth-and-security      │ C-08 parcial-catalog-stock   │              —
   8  │ C-09 parcial-ventas-transactions    │              —               │              —
