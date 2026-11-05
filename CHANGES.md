@@ -261,7 +261,7 @@ Paso │ Agente A (Backend Core)              │ Agente B (Backend Aux)       �
 ---
 
 ### [C-08] `parcial-catalog-and-stock`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado
 - **Scope**: Catálogo de libros con soft delete, reposición append-only y consultas paginadas
   - Módulos `libros`, `editoriales`, `generos`, `autores` en `parcial/app/modules/`:
   - Repositorio `LibroRepository(SoftDeleteRepository)` y servicios integrados con `UnitOfWork`

@@ -32,13 +32,18 @@ TEST_DATABASE_URL = os.getenv(
 )
 
 TRUNCATE_TABLES = (
+    "movimiento_stock",
     "evento_seguridad",
     "intento_acceso",
     "asignacion_rol",
-    "venta",
     "detalle_venta",
+    "venta",
     "cliente",
     "usuario",
+    "libro",
+    "autor",
+    "editorial",
+    "genero",
 )
 
 
