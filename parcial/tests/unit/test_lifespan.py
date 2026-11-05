@@ -1,9 +1,17 @@
 from types import SimpleNamespace
 from unittest.mock import AsyncMock, MagicMock, patch
+
 import pytest
 from httpx import ASGITransport, AsyncClient
 
+from parcial.app.core.dependencies import get_usuario_actual
 from parcial.app.main import app, lifespan
+
+
+def _usar_usuario(usuario: object):
+    """Temporarily overrides the identity dependency for a protected-group test."""
+    app.dependency_overrides[get_usuario_actual] = lambda: usuario
+    return usuario
 
 
 @pytest.mark.asyncio
@@ -34,30 +42,37 @@ async def test_open_route_group_health_live() -> None:
 
 
 @pytest.mark.asyncio
-async def test_protected_route_group_allows_normal_user() -> None:
-    """Verifies protected route group allows access when debe_cambiar_password is False."""
+async def test_protected_route_group_requires_session() -> None:
+    """Verifies protected route group rejects requests without a session cookie."""
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as client:
         response = await client.get("/protected/ping")
-        assert response.status_code == 200
-        assert response.json() == {"status": "ok"}
+        assert response.status_code == 401
+
+
+@pytest.mark.asyncio
+async def test_protected_route_group_allows_normal_user() -> None:
+    """Verifies protected route group allows access when debe_cambiar_password is False."""
+    _usar_usuario(SimpleNamespace(activo=True, debe_cambiar_password=False))
+    try:
+        transport = ASGITransport(app=app)
+        async with AsyncClient(transport=transport, base_url="http://test") as client:
+            response = await client.get("/protected/ping")
+            assert response.status_code == 200
+            assert response.json() == {"status": "ok"}
+    finally:
+        app.dependency_overrides.pop(get_usuario_actual, None)
 
 
 @pytest.mark.asyncio
 async def test_protected_route_group_blocks_when_must_change_password() -> None:
     """Verifies protected route group returns 403 Forbidden when debe_cambiar_password is True."""
-    from fastapi import Request
-
-    async def mock_user_middleware(request: Request, call_next):
-        request.state.user = SimpleNamespace(debe_cambiar_password=True)
-        return await call_next(request)
-
-    app.middleware_stack = None  # Reset stack to add middleware dynamically for test
-    app.middleware("http")(mock_user_middleware)
-    app.build_middleware_stack()
-
-    transport = ASGITransport(app=app)
-    async with AsyncClient(transport=transport, base_url="http://test") as client:
-        response = await client.get("/protected/ping")
-        assert response.status_code == 403
-        assert "Debe cambiar su contraseña" in response.json()["detail"]
+    _usar_usuario(SimpleNamespace(activo=True, debe_cambiar_password=True))
+    try:
+        transport = ASGITransport(app=app)
+        async with AsyncClient(transport=transport, base_url="http://test") as client:
+            response = await client.get("/protected/ping")
+            assert response.status_code == 403
+            assert "Debe cambiar su contraseña" in response.json()["detail"]
+    finally:
+        app.dependency_overrides.pop(get_usuario_actual, None)

@@ -60,6 +60,19 @@ def test_missing_secret_key_fails_fast(monkeypatch: pytest.MonkeyPatch) -> None:
     assert "SECRET_KEY" in str(exc_info.value)
 
 
+def test_bcrypt_max_concurrency_loading(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Verifies the configurable bcrypt concurrency limit is loaded from settings."""
+    monkeypatch.setenv("POSTGRES_USER", "postgres")
+    monkeypatch.setenv("POSTGRES_PASSWORD", "postgres")
+    monkeypatch.setenv("POSTGRES_DB", "db")
+    monkeypatch.setenv("SECRET_KEY", "secret")
+    monkeypatch.setenv("BCRYPT_MAX_CONCURRENCY", "2")
+
+    settings = Settings(_env_file=None)
+
+    assert settings.BCRYPT_MAX_CONCURRENCY == 2
+
+
 def test_get_settings_singleton_cache(monkeypatch: pytest.MonkeyPatch) -> None:
     """Verifies get_settings returns the same cached instance."""
     monkeypatch.setenv("POSTGRES_USER", "postgres")

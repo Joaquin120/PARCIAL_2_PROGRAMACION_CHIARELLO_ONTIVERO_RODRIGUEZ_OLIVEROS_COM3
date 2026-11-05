@@ -47,3 +47,12 @@ async def get_session() -> AsyncGenerator[AsyncSession, None]:
             yield session
         finally:
             await session.close()
+
+
+async def get_sessionmaker() -> async_sessionmaker[AsyncSession]:
+    """Dependency exposing the configured session factory.
+
+    Used by flows that must commit outside the request transaction (for
+    example, persisting a failed login attempt), and overridable in tests.
+    """
+    return async_session_factory

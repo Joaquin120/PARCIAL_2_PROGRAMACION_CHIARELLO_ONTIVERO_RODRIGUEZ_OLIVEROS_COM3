@@ -229,7 +229,7 @@ Paso │ Agente A (Backend Core)              │ Agente B (Backend Aux)       �
 ## FASE 5 — Seguridad, Autenticación y Catálogo de Libros
 
 ### [C-07] `parcial-auth-and-security`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado
 - **Scope**: Autenticación con cookies HttpOnly, límite de 72 bytes en contraseñas, rate limiting con sesión aislada, mitigación de timing attacks y RBAC
   - Validación de DTOs con `model_config = ConfigDict(extra="forbid")` rechazando campos inesperados con **HTTP 422**; validación estricta de contraseñas de entrada `<= 72 bytes` (`len(v.encode('utf-8')) <= 72` -> **HTTP 422**, nunca 500)
   - Módulo de seguridad en `parcial/app/core/security.py`: `bcrypt` con costo desde `Settings`, ejecutado mediante `await asyncio.to_thread(...)` y bajo `asyncio.Semaphore` para limitar concurrencia antes de abrir transacciones de base de datos; tokens JWT con PyJWT

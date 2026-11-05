@@ -1,5 +1,5 @@
 from functools import lru_cache
-from pydantic import computed_field
+from pydantic import Field, computed_field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -28,6 +28,7 @@ class Settings(BaseSettings):
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
     BCRYPT_ROUNDS: int = 12
+    BCRYPT_MAX_CONCURRENCY: int = Field(default=4, ge=1)
     COOKIE_SECURE: bool = False
 
     model_config = SettingsConfigDict(
