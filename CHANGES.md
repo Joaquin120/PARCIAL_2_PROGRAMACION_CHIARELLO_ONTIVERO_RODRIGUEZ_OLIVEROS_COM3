@@ -53,11 +53,11 @@ GATE 3: C-03 ✓
   → C-04 integration-and-e2e-testing           [Agente A] ✓
 
 GATE 4: C-04 ✓                                 ← FORK (Parcial vs Despliegue VPS)
-  → C-05 parcial-core-uow                      [Agente A]
+  → C-05 parcial-core-uow                      [Agente A] ✓
   → C-11 vps-docker-deployment                 [Agente C]
 
 GATE 5: C-05 ✓
-  → C-06 parcial-models-and-migrations          [Agente A]
+  → C-06 parcial-models-and-migrations          [Agente A] ✓
 
 GATE 6: C-06 ✓                                 ← FORK (Auth vs Catálogo)
   → C-07 parcial-auth-and-security             [Agente A]
@@ -175,7 +175,7 @@ Paso │ Agente A (Backend Core)              │ Agente B (Backend Aux)       �
 ## FASE 3 — Arquitectura del Parcial: Core, Repositorios y Unit of Work
 
 ### [C-05] `parcial-core-uow`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado
 - **Scope**: Estructura base de capas en `parcial/app/core/`, Unit of Work sin ser dueño de sesión, repositorios con flush, paginación con default 20 y grupos de rutas
   - Configuración en `parcial/app/core/config.py`: lectura de campos sueltos de PostgreSQL (`POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`, `POSTGRES_HOST`, `POSTGRES_PORT`), `@computed_field` que ensambla `DATABASE_URL` asíncrona (`postgresql+asyncpg://`), costo configurable de bcrypt en `Settings`, `SECRET_KEY` y passwords sin valores por defecto (fail-fast en arranque)
   - Motor y sesiones en `parcial/app/core/database.py`: `create_async_engine` con pool parametrizable, factoría `async_sessionmaker(expire_on_commit=False)`, y `get_session` como generador inyectable de dependencias
@@ -206,7 +206,7 @@ Paso │ Agente A (Backend Core)              │ Agente B (Backend Aux)       �
 ## FASE 4 — Modelos de Dominio y Migraciones del Parcial
 
 ### [C-06] `parcial-models-and-migrations`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado
 - **Scope**: Modelos de dominio del Parcial, modificaciones a Cliente/Libro, y migraciones 3 (Alembic autogen) y 4 (manual SQL con trigger append-only)
   - Modelos de usuarios y seguridad en `parcial/app/modules/usuarios/models.py`:
     - `Usuario`: `id`, `email` (UNIQUE), `nombre`, `password_hash`, `activo`, `debe_cambiar_password`
