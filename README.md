@@ -49,10 +49,23 @@ APP_NAME=TP_Cap1a4_Backend
 ENVIRONMENT=development
 LOG_LEVEL=INFO
 DATABASE_URL=postgresql+asyncpg://postgres:postgres@localhost:5432/tp_cap1a4_db
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+POSTGRES_DB=tp_cap1a4_db
+POSTGRES_HOST=localhost
+POSTGRES_PORT=5432
 DB_ECHO=False
 DB_POOL_SIZE=5
 DB_MAX_OVERFLOW=10
 DB_TIMEOUT=2.0
+
+# Seguridad y Autenticación (Parcial)
+SECRET_KEY=supersecretkey-parcial-2026-unbreakable-token
+ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=60
+BCRYPT_ROUNDS=12
+BCRYPT_MAX_CONCURRENCY=4
+COOKIE_SECURE=False
 ```
 
 ### 4. Iniciar base de datos local con Docker Compose
@@ -155,22 +168,54 @@ curl -X POST "http://localhost:8000/api/v1/items/" \
 
 ## 🧪 Ejecución de Pruebas y Cobertura
 
-### 1. Ejecutar la suite completa con reporte de cobertura (100% Target)
+### 1. Ejecutar la suite completa del proyecto
 ```bash
-pytest -v --cov=src --cov-report=term-missing
+pytest -v
 ```
 
-### 2. Ejecutar por categorías específicas
+### 2. Ejecutar pruebas unitarias (sin base de datos externa)
 ```bash
-# Pruebas unitarias (configuración, modelos, session, alembic, schemas)
+pytest parcial/tests/unit/ -v
 pytest tests/unit/ -v
-
-# Pruebas de integración (health probes, lifespan, migraciones, items api)
-pytest tests/integration/ -v
-
-# Prueba de flujo End-to-End (E2E)
-pytest tests/integration/test_e2e_workflow.py -v
-
-# Pruebas de resiliencia y tolerancia a fallos
-pytest tests/integration/test_resilience.py -v
 ```
+
+### 3. Ejecutar pruebas de integración (requiere PostgreSQL activo)
+Asegurarse de tener la base de datos levantada con `docker compose up -d`:
+```bash
+# Pruebas de integración del módulo parcial (autenticación, roles, auditoría)
+pytest parcial/tests/integration/ -v
+
+# Pruebas de integración del backend base (health probes, items, resiliencia)
+pytest tests/integration/ -v
+```
+
+---
+
+## 🔒 Arquitectura de Seguridad y Autenticación (Parcial)
+
+### 1. Mecanismo de Sesión y Cookies HttpOnly
+- El token JWT (HS256) se transmite **exclusivamente** mediante una cookie segura `access_token`:
+  - `HttpOnly=True`: Inaccesible desde JavaScript en el navegador.
+  - `SameSite="Lax"`: Protección CSRF estándar.
+  - `Secure`: Controlado por la variable de entorno `COOKIE_SECURE` (`True` en producción, `False` en desarrollo local).
+  - `path="/"`: Válido en toda la aplicación.
+- Se rechaza explícitamente el uso de tokens en el cuerpo JSON o vía cabecera `Authorization: Bearer` (responde `401 Unauthorized`).
+
+### 2. Rate Limiting de Autenticación
+- Se controlan los fallos de acceso por combinación `(email, ip)` en una ventana deslizante de 60 segundos.
+- Al alcanzar 5 fallos en la ventana, se responde inmediatamente `429 Too Many Requests` con la cabecera `Retry-After: 60`, sin ejecutar hashing de contraseñas para proteger los recursos del servidor.
+- Los intentos de acceso se persisten en una transacción aislada para no perder el conteo ante rollbacks.
+
+### 3. Mitigación de Ataques de Temporización (Timing Attacks)
+- Durante el lifespan del servidor se precomputa un hash bcrypt ficticio (`app.state.fictitious_password_hash`).
+- Si se intenta autenticar con un correo inexistente, se ejecuta la verificación contra dicho hash para mantener tiempos de respuesta equivalentes y no revelar la existencia de la cuenta.
+
+### 4. Control de Acceso Basado en Roles Dinámico (RBAC)
+- Los roles asignados (`ADMIN`, `VENDEDOR`, `CLIENTE`) se consultan dinámicamente en la base de datos (`asignacion_rol`) en cada petición.
+- Si un rol es revocado o expira (`vence_en`), la pérdida de privilegios tiene efecto inmediato en la siguiente petición.
+- El sistema protege al último administrador activo: se rechaza la revocación del rol `ADMIN` que dejaría al sistema sin administradores, utilizando bloqueo pesimista `SELECT ... FOR UPDATE`.
+- Los administradores no pueden auto-revocarse el rol `ADMIN`.
+
+### 5. Auditoría de Seguridad Transaccional
+- Toda mutación crítica (alta de personal, asignación de rol, revocación de rol y cambio de contraseña) registra un evento en la tabla `evento_seguridad` dentro de la misma transacción (Unit of Work).
+- Los eventos pueden ser consultados por administradores en `GET /eventos` mediante el envoltorio de paginación estándar `{items, total, page, size, pages}`.

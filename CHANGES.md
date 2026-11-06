@@ -26,13 +26,13 @@ C-01 foundation-setup [x]
               └── C-04 integration-and-e2e-testing [x]
                     ├── C-11 vps-docker-deployment
                     └── [Parcial Capítulos 1 a 6]
-                        C-05 parcial-core-uow
-                          └── C-06 parcial-models-and-migrations
+                        C-05 parcial-core-uow [x]
+                          └── C-06 parcial-models-and-migrations [x]
                                 ├── C-07 parcial-auth-and-security
-                                │     └── C-09 parcial-ventas-transactions
+                                │     └── C-09 parcial-ventas-transactions [x]
                                 └── C-08 parcial-catalog-and-stock
-                                      └── C-09 parcial-ventas-transactions
-                                            └── C-10 parcial-seed-and-e2e-verification
+                                      └── C-09 parcial-ventas-transactions [x]
+                                            └── C-10 parcial-seed-and-e2e-verification [x]
 ```
 
 ### Paralelismo por fase
@@ -53,21 +53,21 @@ GATE 3: C-03 ✓
   → C-04 integration-and-e2e-testing           [Agente A] ✓
 
 GATE 4: C-04 ✓                                 ← FORK (Parcial vs Despliegue VPS)
-  → C-05 parcial-core-uow                      [Agente A]
+  → C-05 parcial-core-uow                      [Agente A] ✓
   → C-11 vps-docker-deployment                 [Agente C]
 
 GATE 5: C-05 ✓
-  → C-06 parcial-models-and-migrations          [Agente A]
+  → C-06 parcial-models-and-migrations          [Agente A] ✓
 
 GATE 6: C-06 ✓                                 ← FORK (Auth vs Catálogo)
   → C-07 parcial-auth-and-security             [Agente A]
   → C-08 parcial-catalog-and-stock             [Agente B]
 
 GATE 7: C-07 ✓, C-08 ✓
-  → C-09 parcial-ventas-transactions           [Agente A]
+  → C-09 parcial-ventas-transactions           [Agente A] [x]
 
 GATE 8: C-09 ✓
-  → C-10 parcial-seed-and-e2e-verification     [Agente A]
+  → C-10 parcial-seed-and-e2e-verification     [Agente A] [x]
 ```
 
 ### Camino crítico (9 changes — mínimo irreducible)
@@ -86,11 +86,11 @@ Paso │ Agente A (Backend Core)              │ Agente B (Backend Aux)       �
   2  │ C-02 domain-models-and-migrations[x]│              —               │              —
   3  │ C-03 business-api-endpoints [x]      │              —               │              —
   4  │ C-04 integration-and-e2e-testing [x]│              —               │              —
-  5  │ C-05 parcial-core-uow                │              —               │ C-11 vps-docker-deployment
-  6  │ C-06 parcial-models-and-migrations  │              —               │              —
+  5  │ C-05 parcial-core-uow [x]            │              —               │ C-11 vps-docker-deployment
+  6  │ C-06 parcial-models-and-migrations[x]│              —               │              —
   7  │ C-07 parcial-auth-and-security      │ C-08 parcial-catalog-stock   │              —
-  8  │ C-09 parcial-ventas-transactions    │              —               │              —
-  9  │ C-10 parcial-seed-and-e2e           │              —               │              —
+  8  │ C-09 parcial-ventas-transactions    │              —               │              — [x]
+  9  │ C-10 parcial-seed-and-e2e [x]        │              —               │              —
 ```
 
 ---
@@ -175,7 +175,7 @@ Paso │ Agente A (Backend Core)              │ Agente B (Backend Aux)       �
 ## FASE 3 — Arquitectura del Parcial: Core, Repositorios y Unit of Work
 
 ### [C-05] `parcial-core-uow`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado
 - **Scope**: Estructura base de capas en `parcial/app/core/`, Unit of Work sin ser dueño de sesión, repositorios con flush, paginación con default 20 y grupos de rutas
   - Configuración en `parcial/app/core/config.py`: lectura de campos sueltos de PostgreSQL (`POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`, `POSTGRES_HOST`, `POSTGRES_PORT`), `@computed_field` que ensambla `DATABASE_URL` asíncrona (`postgresql+asyncpg://`), costo configurable de bcrypt en `Settings`, `SECRET_KEY` y passwords sin valores por defecto (fail-fast en arranque)
   - Motor y sesiones en `parcial/app/core/database.py`: `create_async_engine` con pool parametrizable, factoría `async_sessionmaker(expire_on_commit=False)`, y `get_session` como generador inyectable de dependencias
@@ -206,7 +206,7 @@ Paso │ Agente A (Backend Core)              │ Agente B (Backend Aux)       �
 ## FASE 4 — Modelos de Dominio y Migraciones del Parcial
 
 ### [C-06] `parcial-models-and-migrations`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado
 - **Scope**: Modelos de dominio del Parcial, modificaciones a Cliente/Libro, y migraciones 3 (Alembic autogen) y 4 (manual SQL con trigger append-only)
   - Modelos de usuarios y seguridad en `parcial/app/modules/usuarios/models.py`:
     - `Usuario`: `id`, `email` (UNIQUE), `nombre`, `password_hash`, `activo`, `debe_cambiar_password`
@@ -229,7 +229,7 @@ Paso │ Agente A (Backend Core)              │ Agente B (Backend Aux)       �
 ## FASE 5 — Seguridad, Autenticación y Catálogo de Libros
 
 ### [C-07] `parcial-auth-and-security`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado
 - **Scope**: Autenticación con cookies HttpOnly, límite de 72 bytes en contraseñas, rate limiting con sesión aislada, mitigación de timing attacks y RBAC
   - Validación de DTOs con `model_config = ConfigDict(extra="forbid")` rechazando campos inesperados con **HTTP 422**; validación estricta de contraseñas de entrada `<= 72 bytes` (`len(v.encode('utf-8')) <= 72` -> **HTTP 422**, nunca 500)
   - Módulo de seguridad en `parcial/app/core/security.py`: `bcrypt` con costo desde `Settings`, ejecutado mediante `await asyncio.to_thread(...)` y bajo `asyncio.Semaphore` para limitar concurrencia antes de abrir transacciones de base de datos; tokens JWT con PyJWT
@@ -261,7 +261,7 @@ Paso │ Agente A (Backend Core)              │ Agente B (Backend Aux)       �
 ---
 
 ### [C-08] `parcial-catalog-and-stock`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado
 - **Scope**: Catálogo de libros con soft delete, reposición append-only y consultas paginadas
   - Módulos `libros`, `editoriales`, `generos`, `autores` en `parcial/app/modules/`:
   - Repositorio `LibroRepository(SoftDeleteRepository)` y servicios integrados con `UnitOfWork`
@@ -284,7 +284,7 @@ Paso │ Agente A (Backend Core)              │ Agente B (Backend Aux)       �
 ## FASE 6 — Transacciones Atómicas de Ventas y Clientes
 
 ### [C-09] `parcial-ventas-transactions`
-- **Estado**: `[ ]` pendiente
+- **Estado**: [x] completado
 - **Scope**: Registro atómico de ventas con descuento de stock bajo Unit of Work, consulta sin N+1 y aviso en segundo plano
   - Módulos `clientes` y `ventas` en `parcial/app/modules/`:
   - `POST /ventas` (`VENDEDOR`, `ADMIN`):
@@ -311,7 +311,7 @@ Paso │ Agente A (Backend Core)              │ Agente B (Backend Aux)       �
 ## FASE 7 — Datos Iniciales, Casos de Prueba y Despliegue VPS
 
 ### [C-10] `parcial-seed-and-e2e-verification`
-- **Estado**: `[ ]` pendiente
+- **Estado**: [x] completado
 - **Scope**: Script de carga de datos iniciales (`seed.py`), suite de pruebas C-01 a C-16 y prueba del trigger de sólo agregado
   - Script `parcial/seed.py`:
     - Creación de usuarios: `admin@example.com` y `admin2@example.com` (`ADMIN`), `vendedor@example.com` (`VENDEDOR`), `ana@example.com` (`CLIENTE`), `nuevo@example.com` (`VENDEDOR` con `debe_cambiar_password = true`)
@@ -332,7 +332,7 @@ Paso │ Agente A (Backend Core)              │ Agente B (Backend Aux)       �
 ---
 
 ### [C-11] `vps-docker-deployment`
-- **Estado**: `[ ]` pendiente
+- **Estado**: [x] completado
 - **Scope**: Despliegue del TP (Capítulos 1 a 4) en carpeta independiente `despliegue/`
   - Carpeta independiente `despliegue/` con el código intacto del TP (Capítulos 1 a 4)
   - `Dockerfile` multi-stage optimizado para el TP (1 a 4) basado en `python:3.12-alpine` (< 100 MB, D-01)
