@@ -32,7 +32,7 @@ C-01 foundation-setup [x]
                                 │     └── C-09 parcial-ventas-transactions [x]
                                 └── C-08 parcial-catalog-and-stock
                                       └── C-09 parcial-ventas-transactions [x]
-                                            └── C-10 parcial-seed-and-e2e-verification
+                                            └── C-10 parcial-seed-and-e2e-verification [x]
 ```
 
 ### Paralelismo por fase
@@ -67,7 +67,7 @@ GATE 7: C-07 ✓, C-08 ✓
   → C-09 parcial-ventas-transactions           [Agente A] [x]
 
 GATE 8: C-09 ✓
-  → C-10 parcial-seed-and-e2e-verification     [Agente A]
+  → C-10 parcial-seed-and-e2e-verification     [Agente A] [x]
 ```
 
 ### Camino crítico (9 changes — mínimo irreducible)
@@ -90,7 +90,7 @@ Paso │ Agente A (Backend Core)              │ Agente B (Backend Aux)       �
   6  │ C-06 parcial-models-and-migrations[x]│              —               │              —
   7  │ C-07 parcial-auth-and-security      │ C-08 parcial-catalog-stock   │              —
   8  │ C-09 parcial-ventas-transactions    │              —               │              — [x]
-  9  │ C-10 parcial-seed-and-e2e           │              —               │              —
+  9  │ C-10 parcial-seed-and-e2e [x]        │              —               │              —
 ```
 
 ---
@@ -311,7 +311,7 @@ Paso │ Agente A (Backend Core)              │ Agente B (Backend Aux)       �
 ## FASE 7 — Datos Iniciales, Casos de Prueba y Despliegue VPS
 
 ### [C-10] `parcial-seed-and-e2e-verification`
-- **Estado**: `[ ]` pendiente
+- **Estado**: [x] completado
 - **Scope**: Script de carga de datos iniciales (`seed.py`), suite de pruebas C-01 a C-16 y prueba del trigger de sólo agregado
   - Script `parcial/seed.py`:
     - Creación de usuarios: `admin@example.com` y `admin2@example.com` (`ADMIN`), `vendedor@example.com` (`VENDEDOR`), `ana@example.com` (`CLIENTE`), `nuevo@example.com` (`VENDEDOR` con `debe_cambiar_password = true`)
@@ -332,7 +332,7 @@ Paso │ Agente A (Backend Core)              │ Agente B (Backend Aux)       �
 ---
 
 ### [C-11] `vps-docker-deployment`
-- **Estado**: `[ ]` pendiente
+- **Estado**: [x] completado
 - **Scope**: Despliegue del TP (Capítulos 1 a 4) en carpeta independiente `despliegue/`
   - Carpeta independiente `despliegue/` con el código intacto del TP (Capítulos 1 a 4)
   - `Dockerfile` multi-stage optimizado para el TP (1 a 4) basado en `python:3.12-alpine` (< 100 MB, D-01)
