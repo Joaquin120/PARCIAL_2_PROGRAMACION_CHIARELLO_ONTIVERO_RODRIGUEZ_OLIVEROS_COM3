@@ -29,9 +29,9 @@ C-01 foundation-setup [x]
                         C-05 parcial-core-uow [x]
                           └── C-06 parcial-models-and-migrations [x]
                                 ├── C-07 parcial-auth-and-security
-                                │     └── C-09 parcial-ventas-transactions
+                                │     └── C-09 parcial-ventas-transactions [x]
                                 └── C-08 parcial-catalog-and-stock
-                                      └── C-09 parcial-ventas-transactions
+                                      └── C-09 parcial-ventas-transactions [x]
                                             └── C-10 parcial-seed-and-e2e-verification
 ```
 
@@ -64,7 +64,7 @@ GATE 6: C-06 ✓                                 ← FORK (Auth vs Catálogo)
   → C-08 parcial-catalog-and-stock             [Agente B]
 
 GATE 7: C-07 ✓, C-08 ✓
-  → C-09 parcial-ventas-transactions           [Agente A]
+  → C-09 parcial-ventas-transactions           [Agente A] [x]
 
 GATE 8: C-09 ✓
   → C-10 parcial-seed-and-e2e-verification     [Agente A]
@@ -89,7 +89,7 @@ Paso │ Agente A (Backend Core)              │ Agente B (Backend Aux)       �
   5  │ C-05 parcial-core-uow [x]            │              —               │ C-11 vps-docker-deployment
   6  │ C-06 parcial-models-and-migrations[x]│              —               │              —
   7  │ C-07 parcial-auth-and-security      │ C-08 parcial-catalog-stock   │              —
-  8  │ C-09 parcial-ventas-transactions    │              —               │              —
+  8  │ C-09 parcial-ventas-transactions    │              —               │              — [x]
   9  │ C-10 parcial-seed-and-e2e           │              —               │              —
 ```
 
@@ -284,7 +284,7 @@ Paso │ Agente A (Backend Core)              │ Agente B (Backend Aux)       �
 ## FASE 6 — Transacciones Atómicas de Ventas y Clientes
 
 ### [C-09] `parcial-ventas-transactions`
-- **Estado**: `[ ]` pendiente
+- **Estado**: [x] completado
 - **Scope**: Registro atómico de ventas con descuento de stock bajo Unit of Work, consulta sin N+1 y aviso en segundo plano
   - Módulos `clientes` y `ventas` en `parcial/app/modules/`:
   - `POST /ventas` (`VENDEDOR`, `ADMIN`):

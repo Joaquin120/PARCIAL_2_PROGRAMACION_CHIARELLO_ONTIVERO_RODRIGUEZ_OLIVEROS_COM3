@@ -47,6 +47,10 @@ def crear_respuesta_paginada(
     )
 
 
+# Alias for compatibility across modules
+armar_paginacion = crear_respuesta_paginada
+
+
 class PaginationParams:
     """FastAPI dependency container for pagination query parameters."""
 

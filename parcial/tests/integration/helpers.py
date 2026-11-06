@@ -72,3 +72,7 @@ async def crear_admin(
     await registrar(client, email, password=password, nombre="Admin")
     await asignar_rol(sessionmaker, email, "ADMIN")
     await login(client, email, password=password)
+
+
+# Alias for compatibility with sales integration tests
+login_user = login

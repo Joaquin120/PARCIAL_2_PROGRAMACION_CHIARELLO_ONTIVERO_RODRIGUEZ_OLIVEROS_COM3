@@ -28,7 +28,7 @@ from parcial.app.modules import models  # noqa: F401  (registers every mapped mo
 
 TEST_DATABASE_URL = os.getenv(
     "TEST_DATABASE_URL",
-    "postgresql+asyncpg://postgres:postgres@127.0.0.1:5432/parcial_test_db",
+    "postgresql+asyncpg://postgres:postgres@127.0.0.1:5433/parcial_test_db",
 )
 
 TRUNCATE_TABLES = (

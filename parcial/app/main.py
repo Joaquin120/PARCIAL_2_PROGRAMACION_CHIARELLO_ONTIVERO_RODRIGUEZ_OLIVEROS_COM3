@@ -10,12 +10,14 @@ from sqlalchemy import text
 from parcial.app.core.config import get_settings
 from parcial.app.core.database import async_session_factory, engine
 from parcial.app.core.dependencies import verificar_no_debe_cambiar_password
+from parcial.app.modules.clientes.router import clientes_router
 from parcial.app.modules.libros.router import (
     catalogo_admin_router,
     catalogo_open_router,
 )
 from parcial.app.modules.usuarios.admin_router import admin_router, eventos_router
 from parcial.app.modules.usuarios.router import auth_router
+from parcial.app.modules.ventas.router import mis_ventas_router, ventas_router
 
 logger = logging.getLogger(__name__)
 
@@ -110,6 +112,9 @@ async def protected_ping() -> dict[str, str]:
 protected_router.include_router(admin_router)
 protected_router.include_router(eventos_router)
 protected_router.include_router(catalogo_admin_router)
+protected_router.include_router(clientes_router)
+protected_router.include_router(ventas_router)
+protected_router.include_router(mis_ventas_router)
 
 
 # Mount routers on application
