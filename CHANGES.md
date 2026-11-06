@@ -24,7 +24,7 @@ C-01 foundation-setup [x]
   └── C-02 domain-models-and-migrations [x]
         └── C-03 business-api-endpoints [x]
               └── C-04 integration-and-e2e-testing [x]
-                    ├── C-11 vps-docker-deployment
+                    ├── C-11 vps-docker-deployment [x]
                     └── [Parcial Capítulos 1 a 6]
                         C-05 parcial-core-uow [x]
                           └── C-06 parcial-models-and-migrations [x]
@@ -54,7 +54,7 @@ GATE 3: C-03 ✓
 
 GATE 4: C-04 ✓                                 ← FORK (Parcial vs Despliegue VPS)
   → C-05 parcial-core-uow                      [Agente A] ✓
-  → C-11 vps-docker-deployment                 [Agente C]
+  → C-11 vps-docker-deployment                 [Agente C] ✓
 
 GATE 5: C-05 ✓
   → C-06 parcial-models-and-migrations          [Agente A] ✓
@@ -86,7 +86,7 @@ Paso │ Agente A (Backend Core)              │ Agente B (Backend Aux)       �
   2  │ C-02 domain-models-and-migrations[x]│              —               │              —
   3  │ C-03 business-api-endpoints [x]      │              —               │              —
   4  │ C-04 integration-and-e2e-testing [x]│              —               │              —
-  5  │ C-05 parcial-core-uow [x]            │              —               │ C-11 vps-docker-deployment
+  5  │ C-05 parcial-core-uow [x]            │              —               │ C-11 vps-docker-deployment[x]
   6  │ C-06 parcial-models-and-migrations[x]│              —               │              —
   7  │ C-07 parcial-auth-and-security      │ C-08 parcial-catalog-stock   │              —
   8  │ C-09 parcial-ventas-transactions    │              —               │              — [x]
