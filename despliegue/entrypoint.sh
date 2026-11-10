@@ -1,8 +1,10 @@
 #!/bin/sh
 set -e
 
+export PATH="/opt/venv/bin:$PATH"
+
 echo "[entrypoint] Iniciando verificacion de disponibilidad de PostgreSQL..."
-python - << 'EOF'
+/opt/venv/bin/python - << 'EOF'
 import asyncio
 import os
 import sys
@@ -35,8 +37,8 @@ if not asyncio.run(wait_for_db()):
 EOF
 
 echo "[entrypoint] Ejecutando migraciones de base de datos (alembic upgrade head)..."
-alembic upgrade head
+/opt/venv/bin/alembic upgrade head
 echo "[entrypoint] Migraciones aplicadas con exito."
 
 echo "[entrypoint] Iniciando servidor Uvicorn en 0.0.0.0:8000..."
-exec uvicorn src.main:app --host 0.0.0.0 --port 8000
+exec /opt/venv/bin/uvicorn src.main:app --host 0.0.0.0 --port 8000
