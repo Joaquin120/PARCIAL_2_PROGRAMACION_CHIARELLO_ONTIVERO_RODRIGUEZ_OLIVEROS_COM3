@@ -40,7 +40,7 @@ WORKDIR /app
 COPY --chown=appuser:appgroup src/ ./src/
 COPY --chown=appuser:appgroup alembic/ ./alembic/
 COPY --chown=appuser:appgroup alembic.ini ./alembic.ini
-COPY --chown=appuser:appgroup entrypoint.sh ./entrypoint.sh
+COPY --chown=appuser:appgroup despliegue/entrypoint.sh ./entrypoint.sh
 
 RUN chmod +x ./entrypoint.sh
 
